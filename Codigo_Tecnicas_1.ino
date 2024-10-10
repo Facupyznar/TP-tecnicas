@@ -38,8 +38,8 @@ Stepper motorPan = Stepper(pasosPorRevolucion, 34, 35, 19, 5);  // Motor pan
 // Variable de control para saber qué motor está activo
 bool motorPanActivo = true;
 
-// Número de pasos necesarios para mover 2 cm (según el paso de la varilla)
-int pasosPorMovimiento = 1000;  // Cambia este valor según el avance de tu varilla
+int pasosCuchilla = 1600;  // Pasos para mover la cuchilla 2cm
+int pasosPan; // Pasos para mover el pan con el grosor elegido
 
 void setup() {
   // Configuramos los pines de los botones como entradas
@@ -78,18 +78,21 @@ void loop() {
     if (button1State == LOW) { 
       selectedOption = 1;
       thickness = 1.25;
+      pasosPan = 1000; // Pasos para mover el pan 1.25cm
       requestConfirmation();
       delay(200);  // Esperar a que el botón se suelte (anti rebote)
     } 
     else if (button2State == LOW) { 
       selectedOption = 2;
       thickness = 2.0;
+      pasosPan = 1600; // Pasos para mover el pan 2cm
       requestConfirmation();
       delay(200);  // Esperar a que el botón se suelte
     } 
     else if (button3State == LOW) { 
       selectedOption = 3;
       thickness = 3.0;
+      pasosPan = 2400; // Pasos para mover el pan 3cm
       requestConfirmation();
       delay(200);  // Esperar a que el botón se suelte
     }
@@ -117,14 +120,14 @@ void loop() {
   if (cortando == 1){
     // Si el motor pan está activo, mueve 2 cm y apaga el motor cuchilla
     if (motorPanActivo) {
-      motorCuchilla.step(pasosPorMovimiento);  // Mueve el motor pan la cantidad de pasos para 2 cm
+      motorCuchilla.step(pasosPan);  // Mueve el motor pan la cantidad de pasos para el grosor elegido
       motorPan.step(0);    // Motor cuchilla apagado
       delay(1000);       // Pausa para el motor pan
       motorPanActivo = false;  // Cambiar el control para permitir que motor cuchilla gire
     }
   // Si el motor cuchilla está activo, mueve el motor chuchilla y apaga el motor pan
     else {
-      motorCuchilla.step(pasosPorMovimiento);  // Mueve el motor cuchilla
+      motorCuchilla.step(pasosCuchilla);  // Mueve el motor cuchilla
       motorPan.step(0);    // Motor pan apagado
       delay(1000);       // Pausa para el motor cuchilla
       motorPanActivo = true;  // Cambiar el control para que el motor pan pueda moverse nuevamente
