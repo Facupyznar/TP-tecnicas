@@ -120,15 +120,12 @@ void loop() {
   if (cortando == 1){
     // Si el motor pan está activo, mueve 2 cm y apaga el motor cuchilla
     if (motorPanActivo) {
-      motorCuchilla.step(pasosPan);  // Mueve el motor pan la cantidad de pasos para el grosor elegido
-      motorPan.step(0);    // Motor cuchilla apagado
-      delay(1000);       // Pausa para el motor pan
+      motorPan.step(pasosPan);  // Mueve el motor pan la cantidad de pasos para el grosor elegido
       motorPanActivo = false;  // Cambiar el control para permitir que motor cuchilla gire
     }
   // Si el motor cuchilla está activo, mueve el motor chuchilla y apaga el motor pan
     else {
       motorCuchilla.step(pasosCuchilla);  // Mueve el motor cuchilla
-      motorPan.step(0);    // Motor pan apagado
       delay(1000);       // Pausa para el motor cuchilla
       motorPanActivo = true;  // Cambiar el control para que el motor pan pueda moverse nuevamente
     }
@@ -137,12 +134,7 @@ void loop() {
   } 
   // Verificamos si el fin de carrera ha sido presionado
   if (endOfRaceState == LOW) {
-    // Parar los motores y regresar a la pantalla de inicio
-    motorPan.step(0); // Detener el motor pan
-    motorCuchilla.step(0); // Detener el motor cuchilla
-    resetDisplay(); // Volver a la pantalla inicial
-    cortando = 0; // Detener el corte
-    selectedOption = 0; // Permitir la selección de grosor nuevamente
+    detenerMotores();
     return; // Salir del loop para que no siga ejecutando corte
   }
 }
@@ -194,4 +186,14 @@ void cuttingMessage() {
   lcd.print("...");
   delay(1000);  // Esperar un momento antes de reiniciar el menú
   cortando = 1;
+}
+
+// Función para detener los motores y reiniciar
+void detenerMotores() {
+  motorPan.step(0);      // Detener motor del pan
+  motorCuchilla.step(0); // Detener motor de la cuchilla
+  selectedOption = 0;
+  cortando = 0; 
+  resetDisplay();
+
 }
